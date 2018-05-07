@@ -1,0 +1,140 @@
+﻿<HTML>
+<!--To do list. Katri Ketola.-->
+
+<style>
+/*body:n fontti, fontin väri ja taustan väri*/
+body {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	color: #333333;
+	background-color: #E6E6FA;
+}
+/*otsikon fontti*/
+h2 {
+    font-family: Verdana;
+}
+/*taulukon ja lomakkeen sisältävän div:n taustan väri, padding ja leveys*/
+div {
+	background-color: #fff;
+	padding: 1em;
+	width: 40%;
+}
+/*taulukon leveys, viiva rivin alla ja tekstin sijoittelu*/
+table, tr, td{
+  width: 50%;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+/*taulukon otsikon taustaväri ja tekstin väri*/
+th {
+    background-color: 	#4169E1;
+    color: white;
+}
+/*taulukon raidat*/
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+/*taulukon rivin taustaväri muuttuu, kun hiiri on sen päällä*/
+tr:hover {
+	background-color: #87CEFA;
+}
+
+</style>
+<script type="application/javascript">
+	
+	//funktio tarkistaa lomakesyötteen ja lisää rivin taulukkoon
+	function validateForm(){
+		//ottaa syötteen muuttujan arvoksi
+		var x = document.forms.myForm.task.value;
+		//jos lomakkeen kenttä on tyhjä, alle 2 merkkiä tai yli 30 merkkiä pitkä
+		if (x == null || x== "" || x.length < 2 || x.length > 30){
+			//tekee kentän reunuksesta punaisen
+			document.forms.myForm.task.style.borderColor = "red";
+			//lisää virheilmoituksen kentän viereen
+			document.getElementById('errorname').innerHTML= "*Task must be filled out and max 30 characters";
+			return false;
+		}
+		//muuten syöte on OK ja tehdään taulukkoon uusi rivi
+		else { 
+		//poistetaan virheilmoitus
+		document.getElementById('errorname').innerHTML= "";
+		//poistetaan punainen reunus
+		document.forms.myForm.task.style.borderColor = "initial";
+		//otetaan tehtävälistataulukko talteen muuttujaan
+		var table = document.getElementById("tasklist");
+		//lisätään tyhjä rivi taulukon loppuun
+		var row = table.insertRow(-1);
+		//lisätään riviin 3 solua
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+
+		// Add some text to the new cells:
+		//lisätään lomakkeen syöte soluun 2
+		cell2.innerHTML = x;
+		//lisätään checkbox soluun 1, klikattaessa kutsutaan funktiota changeStyle, annetaan parametrina this
+		var checkbox1 = '<input type="checkbox" value="no" onclick="changeStyle(this)">';
+		cell1.innerHTML = checkbox1;
+		//lisätään remove-nappi soluun 3, klikattaessa kutsutaan funktiota removeTask
+		var deletebutton = '<button type="delete" value="Remove" onclick="removeTask(this)"<u></u>Remove</button>';
+		cell3.innerHTML = deletebutton;
+		//tyhjennä lomake seuraavan tehtävän syöttämistä varten
+		document.forms.myForm.task.value="";
+		
+		return false;
+		}
+		
+	}
+
+	//funktio, jolla poistetaan tietty tehtävä (koko rivi) taulukosta, saa parametrina sen rivin remove-napin
+	function removeTask(src){
+		//otetaan poistettava rivi muuttujaan (remove-napin parent on solu, sen parent on rivi)
+		var dRow = src.parentElement.parentElement; 
+		//poistetaan kyseinen rivi tehtävätaulukosta 
+		document.all("tasklist").deleteRow(dRow.rowIndex);  
+		
+	}
+	
+	//funktio muuttaa tehtävän tekstin tyypin, kun checkbox valittuna (eli kun tehtävä merkitty tehdyksi)
+	//saa parametrina sen rivin checkboxin
+	function changeStyle(src){
+		//rivin tekstin tyyliksi asetetaan yliviivaus ja kursivointi ja muutetaan fontin väri
+		src.parentElement.parentElement.style.textDecorationLine="line-through";
+		src.parentElement.parentElement.style.color="#bdbdbd";
+		src.parentElement.parentElement.style.fontStyle="italic";
+		
+	}
+	
+</script>
+
+<h2>To Do List</h2>
+<!--Div sisältää ohjetekstin, lomakkeen ja taulukon-->
+<div>
+<p>This is a to do list, where you can add tasks to your list, check them off and delete them as you finish them.</p>
+<!--Kun lomake lähetetään, kutsutaan lomakkeen tarkistamisfunktiota-->
+<form name="myForm" onsubmit="return validateForm()">
+	Add new task:
+	<!--Virheilmoitus lisätään kohtaan, jonka id on errorname-->
+  <input type="text" name="task"><span id="task"></span> <span id="errorname"></span>
+<input type="submit" value="Add task">
+</form> 
+
+<!--Taulukkoon lisätään tehtäviä, jotka käyttäjä syöttää yllä olevaan lomakkeeseen-->
+<table id="tasklist" class="display" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Tasks</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tfoot>
+    </tfoot>
+    <tbody>
+
+    </tbody>
+</table>
+
+</div>
+
+
+</html>
